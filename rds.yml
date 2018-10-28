@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Metadata: 
+  License: Apache-2.0
+Parameters:
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  DBName:
+    Default: MyDatabase
+    Description: The database name
+    Type: String
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric
+      characters.
+  DBUser:
+    NoEcho: 'true'
+    Description: The database admin account username
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric
+      characters.
+  DBPassword:
+    NoEcho: 'true'
+    Description: The database admin account password
+    Type: AWS::SSM::Parameter::Value<String>
+    MinLength: '1'
+    MaxLength: '41'
+    ConstraintDescription: must contain only alphanumeric characters.
+  EC2SecurityGroup:
+    Description: The EC2 security group that contains instances that need access to
+      the database
+    Default: default
+    Type: String
+    AllowedPattern: '[a-zA-Z0-9\-]+'
+    ConstraintDescription: must be a valid security group name.
+  MultiAZ:
+    Description: Multi-AZ master database
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+    ConstraintDescription: must be true or false.
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+  DNSHostedZone:
+    Description: Domain name
+    Type: String
+    Default: "kter.jp."
+  DNSDomain:
+    Description: Domain name
+    Type: String
+    Default: "kter.jp"
+Resources:
+  DBEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: "Allow access from specific SecurityGroup"
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '3306'
+        ToPort: '3306'
+        SourceSecurityGroupId: !Ref 'EC2SecurityGroup'
+  DBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "DB SubnetGroup for itizen"
+      SubnetIds: !Ref Subnets
+  MasterDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: !Ref 'DBName'
+      AllocatedStorage: 5
+      DBInstanceClass: db.t2.micro
+      Engine: MySQL
+      MasterUsername: !Ref 'DBUser'
+      MasterUserPassword: !Ref 'DBPassword'
+      MultiAZ: !Ref 'MultiAZ'
+      Tags:
+      - Key: Name
+        Value: Master Database
+      VPCSecurityGroups:
+        - !GetAtt DBEC2SecurityGroup.GroupId
+      DBSubnetGroupName: !Ref DBSubnetGroup
+    DeletionPolicy: Snapshot
+  FrontDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref DNSHostedZone
+      Name: !Join
+        - ''
+        - - 'db'
+          - '.'
+          - 'itizen'
+          - '.'
+          - !Ref DNSHostedZone
+      Type: CNAME
+      TTL: '60'
+      ResourceRecords:
+      - !GetAtt MasterDB.Endpoint.Address

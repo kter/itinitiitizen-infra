@@ -1,0 +1,191 @@
+# TODO: Nested Stack https://maya2250.hatenablog.com/entry/2018/06/23/231826
+Parameters:
+  # WebImageRepositoryName:
+  #   Default: "web"
+  #   Description: "Name of ECR"
+  #   Type: String
+  AppImageRepositoryName:
+    Default: "app-itizen"
+    Description: "Name of ECR"
+    Type: String
+  DesiredCount:
+    Description: ECS desired count
+    Type: Number
+    Default: 1
+  SourceSecurityGroup:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  DNSHostedZone:
+    Description: Domain name
+    Type: String
+    Default: "kter.jp."
+  DNSDomain:
+    Description: Domain name
+    Type: String
+    Default: "kter.jp"
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref AWS::StackName
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /ecs/${AWS::StackName}
+  ECSService:
+    Type: AWS::ECS::Service
+    DependsOn: TaskDefinition
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: !Ref DesiredCount
+      LoadBalancers:
+      - ContainerName: app
+        ContainerPort: '80'
+        TargetGroupArn: !Ref 'ECSTG'
+      TaskDefinition: !Ref TaskDefinition
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: !Ref SourceSecurityGroup
+          Subnets: !Ref Subnets
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    DependsOn: ECSALBListenerRule
+    Properties:
+      Family: !Sub ${AWS::StackName}-app-web
+      Memory: 512
+      Cpu: 256
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      ContainerDefinitions:
+        - Name: app
+          Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/app-itizen:latest
+          EntryPoint:
+            - bundle
+            - exec
+            - rails
+            - s
+            - -p
+            - 3000
+            - -b
+            - '0.0.0.0'
+          Essential: true
+          Memory: 256
+          PortMappings:
+            - ContainerPort: 80
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroup
+              awslogs-stream-prefix: !Ref AWS::StackName
+        # - Name: web
+        #   Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/web:latest
+        #   Essential: true
+        #   Memory: 256
+        #   PortMappings:
+        #     - ContainerPort: 80
+        #   VolumesFrom:
+        #     - SourceContainer: app
+  ItizenALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets: !Ref Subnets
+      Type: application
+      SecurityGroups: !Ref SourceSecurityGroup
+  FrontDNSRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Ref DNSHostedZone
+      RecordSets:
+        - Name: !Join
+            - ''
+            - - 'itizen'
+              - '.'
+              - !Ref DNSDomain
+          Type: A
+          AliasTarget:
+            HostedZoneId: !GetAtt ItizenALB.CanonicalHostedZoneID
+            DNSName: !GetAtt ItizenALB.DNSName
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref 'ECSTG'
+      Certificates:
+        - CertificateArn: !Ref ACMCertificate
+      LoadBalancerArn: !Ref ItizenALB
+      SslPolicy: ELBSecurityPolicy-2016-08
+      Port: 443
+      Protocol: HTTPS
+  ECSALBListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    DependsOn: ALBListener
+    Properties:
+      Actions:
+      - Type: forward
+        TargetGroupArn: !Ref 'ECSTG'
+      Conditions:
+      - Field: path-pattern
+        Values: [/]
+      ListenerArn: !Ref 'ALBListener'
+      Priority: 1
+  ECSTG:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ItizenALB
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      Name: ECSTG
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref 'VPC'
+  ACMCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Join
+          - ''
+          - - 'itizen'
+            - '.'
+            - !Ref DNSDomain
+      DomainValidationOptions:
+        - DomainName: !Join
+            - ''
+            - - 'itizen'
+              - '.'
+              - !Ref DNSDomain
+          ValidationDomain: !Ref DNSDomain
+      ValidationMethod: DNS
+Outputs:
+  ECSService:
+    Value: !Ref ECSService
+    Export:
+      Name: !Sub "${AWS::StackName}-ECSService"
+  ECSCluster:
+    Value: !Ref ECSCluster
+    Export:
+      Name: !Sub "${AWS::StackName}-ECSCluster"
+
