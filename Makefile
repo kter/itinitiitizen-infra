@@ -1,24 +1,9 @@
-# TODO: empty s3 bucket before deletation
-# TODO: empty ecr repository before deletation
-# TODO: 引数を使ってまとめる
-# pipeline or ecs
+# ecs-* ... Pipeline for ECS (deployed by pipeline-*)
+# rds-* ... Pipeline for RDS (deployed by pipeline-*)
+# pipeline-* ... Pipeline for other CloudFormation template (deployed by manually)
 target = ecs
 validate:
 	aws cloudformation validate-template --template-body file://${target}.yml
-
-app-pipeline-create:validate
-	aws cloudformation create-stack --stack-name pipeline-itizen \
-	--template-body file://pipeline.yml \
-	--capabilities CAPABILITY_IAM
-app-pipeline-update:validate
-	aws cloudformation update-stack \
-	--stack-name pipeline-itizen \
-	--template-body file://pipeline.yml \
-	--capabilities CAPABILITY_IAM
-app-pipeline-delete-artifact:
-	aws s3 rb --force s3://`aws s3 ls | grep itizen-artifact | awk '{ print $$3 }' `
-app-pipeline-delete:pipeline-delete-artifact
-	aws cloudformation delete-stack --stack-name pipeline-itizen
 
 ecs-create:validate
 	aws cloudformation create-stack --stack-name ecs-itizen \
@@ -64,14 +49,14 @@ rds-update:validate
 rds-delete:
 	aws cloudformation delete-stack --stack-name rds-itizen
 
-infra-create:validate
+pipeline-create:validate
 	aws cloudformation create-stack --stack-name infra-itizen \
-	--template-body file://infra-pipeline.yml \
+	--template-body file://pipeline.yml \
 	--capabilities CAPABILITY_IAM
-infra-update:validate
+pipeline-update:validate
 	aws cloudformation update-stack \
 	--stack-name infra-itizen \
-	--template-body file://infra-pipeline.yml \
+	--template-body file://pipeline.yml \
 	--capabilities CAPABILITY_IAM
-infra-delete:
+pipeline-delete:
 	aws cloudformation delete-stack --stack-name infra-itizen
