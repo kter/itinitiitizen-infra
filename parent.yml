@@ -1,6 +1,5 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
-Description: CloudFormation CI/CD Demo
 
 Parameters:
   Stage:
@@ -43,25 +42,12 @@ Resources:
   RDS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: src/iam.yml
+      TemplateURL: templates/rds.yml
 
   ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: src/network.yml
+      TemplateURL: templates/ecs.yml
       Parameters:
         Stage: !Ref Stage
         VPCCidrBlock: !Ref VPCCidrBlock
-
-  Compute:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: src/compute.yml
-      Parameters:
-        Stage: !Ref Stage
-        SGId: !GetAtt SG.Outputs.SGId
-        SubnetId: !GetAtt NW.Outputs.SubnetId
-        InstanceProfile: !GetAtt IAM.Outputs.InstanceProfile
-        ImageId: !GetAtt Custom.Outputs.ImageId
-        KeyName: !Ref KeyName
-        InstanceType: !Ref InstanceType
