@@ -11,14 +11,14 @@ phases:
       - |
         [ -d .cfn ] || mkdir .cfn
         aws configure set default.region $AWS_REGION
-        for template in infra-pipeline.yml; do
+        for template in pipeline.yml; do
           echo "$template" | xargs -I% -t aws cloudformation validate-template --template-body file://%
         done
   build:
     commands:
       - |
         aws cloudformation package \
-          --template-file infra-pipeline.yml \
+          --template-file pipeline.yml \
           --s3-bucket $S3_BUCKET \
           --output-template-file .cfn/packaged.yml
 
