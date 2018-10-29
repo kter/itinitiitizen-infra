@@ -43,11 +43,19 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/rds.yml
-
+      Parametes:
+        Subnets: 'subnet-37ac516f\,subnet-94f72ce2'
+        SourceSecurityGroup: sg-04ce930d54d7241df
+        VPC: vpc-cecea5aa
   ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/ecs.yml
       Parameters:
-        Stage: !Ref Stage
-        VPCCidrBlock: !Ref VPCCidrBlock
+        DBName: itizen
+        DBUser: itizen
+        DBPassword: itizen_rds_password
+        EC2SecurityGroup: sg-04ce930d54d7241df
+        MultiAZ: true
+        VPC: vpc-cecea5aa
+        Subnets: 'subnet-37ac516f\,subnet-94f72ce2'
