@@ -13,7 +13,7 @@ Parameters:
     Default: "me@kter.jp"
   Repo:
     Type: String
-    Default: itinitiitizen
+    Default: itinitiitizen-infra
   AppName:
     Type: String
     Default: infra-itizen
