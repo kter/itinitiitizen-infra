@@ -3,13 +3,13 @@ validate:
 	aws cloudformation validate-template --template-body file://pipeline.yml
 
 pipeline-create:validate
-	aws cloudformation create-stack --stack-name infra-itizen \
+	aws cloudformation create-stack --stack-name infra-pipeline-itizen \
 	--template-body file://pipeline.yml \
 	--capabilities CAPABILITY_IAM
 pipeline-update:validate
 	aws cloudformation update-stack \
-	--stack-name infra-itizen \
+	--stack-name infra-pipeline-itizen \
 	--template-body file://pipeline.yml \
 	--capabilities CAPABILITY_IAM
 pipeline-delete:
-	aws cloudformation delete-stack --stack-name infra-itizen
+	aws cloudformation delete-stack --stack-name infra-pipeline-itizen
