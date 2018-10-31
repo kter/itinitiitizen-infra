@@ -2,15 +2,47 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  Stage:
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+  SourceSecurityGroup:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  DBName:
+    Default: MyDatabase
+    Description: The database name
     Type: String
-    Default: dev
-  VPCCidrBlock:
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBUser:
+    NoEcho: 'true'
+    Description: The database admin account username
     Type: String
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-  InstanceType:
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBPassword:
+    NoEcho: 'true'
+    Description: The database admin account password
+    Type: AWS::SSM::Parameter::Value<String>
+    MinLength: '1'
+    MaxLength: '41'
+    ConstraintDescription: must contain only alphanumeric characters.
+  EC2SecurityGroup:
+    Description: The EC2 security group that contains instances that need access to the database
+    Default: default
     Type: String
+    AllowedPattern: '[a-zA-Z0-9\-]+'
+    ConstraintDescription: must be a valid security group name.
+  MultiAZ:
+    Description: Multi-AZ master database
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+    ConstraintDescription: must be true or false.
 
 Metadata:
   AWS::CloudFormation::Interface:
