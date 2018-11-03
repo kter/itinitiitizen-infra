@@ -75,7 +75,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/rds.yml
-      Parametes:
+      Parameters:
         Subnets: 'subnet-37ac516f\,subnet-94f72ce2'
         SourceSecurityGroup: sg-04ce930d54d7241df
         VPC: vpc-cecea5aa
