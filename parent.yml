@@ -82,7 +82,7 @@ Resources:
           - ','
           - !Ref Subnets
         SourceSecurityGroup: !Join
-          - ''
+          - ','
           - !Ref SourceSecurityGroup
         VPC: !Ref VPC
   ECS:
