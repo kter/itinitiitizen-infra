@@ -76,7 +76,9 @@ Resources:
     Properties:
       TemplateURL: templates/rds.yml
       Parameters:
-        Subnets: !Ref Subnets
+        Subnets: !Join
+          - ','
+          - !Ref Subnets
         SourceSecurityGroup: !Ref SourceSecurityGroup
         VPC: !Ref VPC
   ECS:
