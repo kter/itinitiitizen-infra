@@ -43,7 +43,8 @@ Parameters:
     AllowedValues: ['true', 'false']
     ConstraintDescription: must be true or false.
   Subnets:
-    Type: List<AWS::EC2::Subnet::Id>
+    # Type: List<AWS::EC2::Subnet::Id>
+    Type: String
   DNSHostedZone:
     Description: Domain name
     Type: String
@@ -67,7 +68,8 @@ Resources:
     Type: "AWS::RDS::DBSubnetGroup"
     Properties:
       DBSubnetGroupDescription: "DB SubnetGroup for itizen"
-      SubnetIds: !Ref Subnets
+      SubnetIds:
+        - !Ref Subnets
   MasterDB:
     Type: AWS::RDS::DBInstance
     Properties:

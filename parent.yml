@@ -3,9 +3,11 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
   Subnets:
-    Type: List<AWS::EC2::Subnet::Id>
+    # Type: List<AWS::EC2::Subnet::Id>
+    Type: String
   SourceSecurityGroup:
-    Type: List<AWS::EC2::SecurityGroup::Id>
+    # Type: List<AWS::EC2::SecurityGroup::Id>
+    Type: String
   VPC:
     Type: AWS::EC2::VPC::Id
   DBName:

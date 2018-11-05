@@ -13,9 +13,11 @@ Parameters:
     Type: Number
     Default: 1
   SourceSecurityGroup:
-    Type: List<AWS::EC2::SecurityGroup::Id>
+    # Type: List<AWS::EC2::SecurityGroup::Id>
+    Type: String
   Subnets:
-    Type: List<AWS::EC2::Subnet::Id>
+    # Type: List<AWS::EC2::Subnet::Id>
+    Type: String
   VPC:
     Type: AWS::EC2::VPC::Id
   DNSHostedZone:
@@ -63,8 +65,10 @@ Resources:
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          SecurityGroups: !Ref SourceSecurityGroup
-          Subnets: !Ref Subnets
+          SecurityGroups:
+            - !Ref SourceSecurityGroup
+          Subnets:
+            - !Ref Subnets
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: ECSALBListenerRule
@@ -107,9 +111,11 @@ Resources:
   ItizenALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Subnets: !Ref Subnets
+      Subnets:
+        - !Ref Subnets
       Type: application
-      SecurityGroups: !Ref SourceSecurityGroup
+      SecurityGroups:
+        - !Ref SourceSecurityGroup
   FrontDNSRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
