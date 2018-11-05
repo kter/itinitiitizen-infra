@@ -79,7 +79,9 @@ Resources:
         Subnets: !Join
           - ','
           - !Ref Subnets
-        SourceSecurityGroup: !Ref SourceSecurityGroup
+        SourceSecurityGroup: !Join
+          - ''
+          - !Ref SourceSecurityGroup
         VPC: !Ref VPC
   ECS:
     Type: AWS::CloudFormation::Stack
