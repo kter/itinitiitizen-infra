@@ -94,4 +94,6 @@ Resources:
         EC2SecurityGroup: !Ref EC2SecurityGroup
         MultiAZ: !Ref MultiAZ
         VPC: !Ref VPC
-        Subnets: !Ref Subnets
+        Subnets: !Join
+          - ','
+          - !Ref Subnets
