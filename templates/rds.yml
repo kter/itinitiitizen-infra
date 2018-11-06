@@ -43,8 +43,8 @@ Parameters:
     AllowedValues: ['true', 'false']
     ConstraintDescription: must be true or false.
   Subnets:
-    # Type: List<AWS::EC2::Subnet::Id>
-    Type: String
+    Type: List<AWS::EC2::Subnet::Id>
+    # Type: String
   DNSHostedZone:
     Description: Domain name
     Type: String

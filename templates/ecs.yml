@@ -13,11 +13,11 @@ Parameters:
     Type: Number
     Default: 1
   SourceSecurityGroup:
-    # Type: List<AWS::EC2::SecurityGroup::Id>
-    Type: String
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    # Type: String
   Subnets:
-    # Type: List<AWS::EC2::Subnet::Id>
-    Type: String
+    Type: List<AWS::EC2::Subnet::Id>
+    # Type: String
   VPC:
     Type: AWS::EC2::VPC::Id
   DNSHostedZone:
