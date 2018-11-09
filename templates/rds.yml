@@ -25,7 +25,7 @@ Parameters:
   DBPassword:
     NoEcho: 'true'
     Description: The database admin account password
-    Type: AWS::SSM::Parameter::Value<String>
+    Type: String
     MinLength: '1'
     MaxLength: '41'
     ConstraintDescription: must contain only alphanumeric characters.
