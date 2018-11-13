@@ -25,7 +25,7 @@ Parameters:
   DBPassword:
     NoEcho: 'true'
     Description: The database admin account password
-    Type: String
+    Type: AWS::SSM::Parameter::Value<String>
     MinLength: '1'
     MaxLength: '41'
     ConstraintDescription: must contain only alphanumeric characters.
@@ -78,7 +78,7 @@ Resources:
       DBInstanceClass: db.t2.micro
       Engine: MySQL
       MasterUsername: !Ref 'DBUser'
-      MasterUserPassword: !Ref 'DBPassword'
+      MasterUserPassword: '{{resolve:ssm-secure:itizen_rds_password_sec:1}}'
       MultiAZ: !Ref 'MultiAZ'
       Tags:
       - Key: Name
