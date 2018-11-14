@@ -77,9 +77,7 @@ Resources:
         Subnets: !Join
           - ','
           - !Ref Subnets
-        EC2SecurityGroup: !Join
-          - ','
-          - !Ref EC2SecurityGroup
+        EC2SecurityGroup: !Ref EC2SecurityGroup
         VPC: !Ref VPC
   ECS:
     Type: AWS::CloudFormation::Stack
@@ -87,9 +85,7 @@ Resources:
       TemplateURL: templates/ecs.yml
       Parameters:
         VPC: !Ref VPC
-        SourceSecurityGroup: !Join
-          - ','
-          - !Ref SourceSecurityGroup
+        SourceSecurityGroup: !Ref SourceSecurityGroup
         Subnets: !Join
           - ','
           - !Ref Subnets
