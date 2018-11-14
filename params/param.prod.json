@@ -5,7 +5,6 @@
         "VPC": "vpc-cecea5aa",
         "DBName": "itizen",
         "DBUser": "itizen",
-        "DBPassword": "itizen_rds_password",
         "EC2SecurityGroup": "sg-04ce930d54d7241df",
         "MultiAZ": "false"
     }
