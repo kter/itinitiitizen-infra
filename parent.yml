@@ -71,6 +71,9 @@ Resources:
     Properties:
       TemplateURL: templates/rds.yml
       Parameters:
+        DBName: !Ref DBName
+        DBUser: !Ref DBUser
+        MultiAZ: !Ref MultiAZ
         Subnets: !Join
           - ','
           - !Ref Subnets
@@ -83,11 +86,11 @@ Resources:
     Properties:
       TemplateURL: templates/ecs.yml
       Parameters:
-        DBName: !Ref DBName
-        DBUser: !Ref DBUser
         EC2SecurityGroup: !Ref EC2SecurityGroup
-        MultiAZ: !Ref MultiAZ
         VPC: !Ref VPC
+        SourceSecurityGroup: !Join
+          - ','
+          - !Ref SourceSecurityGroup
         Subnets: !Join
           - ','
           - !Ref Subnets
