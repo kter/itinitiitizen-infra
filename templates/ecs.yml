@@ -16,7 +16,7 @@ Parameters:
     # Type: List<AWS::EC2::SecurityGroup::Id>
     Type: String
   Subnets:
-    # Type: List<AWS::EC2::Subnet::Id>
+    Default: "subnet-37ac516f,subnet-94f72ce2"
     Type: String
   VPC:
     Type: AWS::EC2::VPC::Id

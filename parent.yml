@@ -86,6 +86,3 @@ Resources:
       Parameters:
         VPC: !Ref VPC
         SourceSecurityGroup: !Ref SourceSecurityGroup
-        Subnets: !Join
-          - ','
-          - !Ref Subnets
