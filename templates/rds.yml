@@ -22,13 +22,6 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric
       characters.
-  DBPassword:
-    NoEcho: 'true'
-    Description: The database admin account password
-    Type: AWS::SSM::Parameter::Value<String>
-    MinLength: '1'
-    MaxLength: '41'
-    ConstraintDescription: must contain only alphanumeric characters.
   EC2SecurityGroup:
     Description: The EC2 security group that contains instances that need access to
       the database
