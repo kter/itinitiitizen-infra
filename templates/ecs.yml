@@ -15,6 +15,7 @@ Parameters:
   SourceSecurityGroup:
     # Type: List<AWS::EC2::SecurityGroup::Id>
     Type: String
+    Default: "sg-04ce930d54d7241df"
   Subnets:
     Default: "subnet-37ac516f,subnet-94f72ce2"
     Type: String

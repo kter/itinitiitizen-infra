@@ -85,4 +85,3 @@ Resources:
       TemplateURL: templates/ecs.yml
       Parameters:
         VPC: !Ref VPC
-        SourceSecurityGroup: !Ref SourceSecurityGroup
