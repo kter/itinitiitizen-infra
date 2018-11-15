@@ -19,8 +19,6 @@ Parameters:
   Subnets:
     Default: "subnet-37ac516f,subnet-94f72ce2"
     Type: String
-  VPC:
-    Type: AWS::EC2::VPC::Id
   DNSHostedZone:
     Description: Domain name
     Type: String
@@ -169,7 +167,7 @@ Resources:
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref 'VPC'
+      VpcId: Fn::ImportValue:  !Sub "${AWS::StackName}-VPC"
   ACMCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:

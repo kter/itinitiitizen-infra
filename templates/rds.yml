@@ -2,8 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Metadata: 
   License: Apache-2.0
 Parameters:
-  VPC:
-    Type: AWS::EC2::VPC::Id
   DBName:
     Default: MyDatabase
     Description: The database name
@@ -22,22 +20,12 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric
       characters.
-  EC2SecurityGroup:
-    Description: The EC2 security group that contains instances that need access to
-      the database
-    Default: default
-    Type: String
-    AllowedPattern: '[a-zA-Z0-9\-]+'
-    ConstraintDescription: must be a valid security group name.
   MultiAZ:
     Description: Multi-AZ master database
     Type: String
     Default: 'false'
     AllowedValues: ['true', 'false']
     ConstraintDescription: must be true or false.
-  Subnets:
-    Type: List<AWS::EC2::Subnet::Id>
-    # Type: String
   DNSHostedZone:
     Description: Domain name
     Type: String
@@ -47,22 +35,14 @@ Parameters:
     Type: String
     Default: "kter.jp"
 Resources:
-  DBEC2SecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      VpcId: !Ref VPC
-      GroupDescription: "Allow access from specific SecurityGroup"
-      SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '3306'
-        ToPort: '3306'
-        SourceSecurityGroupId: !Ref 'EC2SecurityGroup'
+  # ここでSecurity Groupを設定しないのはSourceSecurityGroupIdに別スタックのSecurity Groupを設定する必要があるため
   DBSubnetGroup:
     Type: "AWS::RDS::DBSubnetGroup"
     Properties:
       DBSubnetGroupDescription: "DB SubnetGroup for itizen"
       SubnetIds:
-        - !Ref Subnets
+        - Fn::ImportValue: !Sub "${AWS::StackName}-Subnet1"
+        - Fn::ImportValue: !Sub "${AWS::StackName}-Subnet2"
   MasterDB:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -77,7 +57,7 @@ Resources:
       - Key: Name
         Value: Master Database
       VPCSecurityGroups:
-        - !GetAtt DBEC2SecurityGroup.GroupId
+        - Fn::ImportValue:  !Sub "${AWS::StackName}-DBEC2SecurityGroupId"
       DBSubnetGroupName: !Ref DBSubnetGroup
     DeletionPolicy: Snapshot
   FrontDNSRecord:
