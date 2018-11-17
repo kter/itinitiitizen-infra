@@ -41,8 +41,10 @@ Resources:
     Properties:
       DBSubnetGroupDescription: "DB SubnetGroup for itizen"
       SubnetIds:
-        - Fn::ImportValue: !Sub "${AWS::StackName}-Subnet1"
-        - Fn::ImportValue: !Sub "${AWS::StackName}-Subnet2"
+        - Fn::ImportValue:
+            !Sub "${AWS::StackName}-Subnet1"
+        - Fn::ImportValue:
+            !Sub "${AWS::StackName}-Subnet2"
   MasterDB:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -57,7 +59,8 @@ Resources:
       - Key: Name
         Value: Master Database
       VPCSecurityGroups:
-        - Fn::ImportValue:  !Sub "${AWS::StackName}-DBEC2SecurityGroupId"
+        - Fn::ImportValue:
+            !Sub "${AWS::StackName}-DBEC2SecurityGroupId"
       DBSubnetGroupName: !Ref DBSubnetGroup
     DeletionPolicy: Snapshot
   FrontDNSRecord:

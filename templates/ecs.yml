@@ -12,13 +12,6 @@ Parameters:
     Description: ECS desired count
     Type: Number
     Default: 1
-  SourceSecurityGroup:
-    # Type: List<AWS::EC2::SecurityGroup::Id>
-    Type: String
-    Default: "sg-04ce930d54d7241df"
-  Subnets:
-    Default: "subnet-37ac516f,subnet-94f72ce2"
-    Type: String
   DNSHostedZone:
     Description: Domain name
     Type: String
@@ -65,9 +58,13 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !Ref SourceSecurityGroup
+            - !Fn::ImportValue:
+                !Sub "${AWS::StackName}-WebServerSecurityGroup"
           Subnets:
-            - !Ref Subnets
+            - !Fn::ImportValue:
+                !Sub "${AWS::StackName}-Subnets1"
+            - !Fn::ImportValue:
+                !Sub "${AWS::StackName}-Subnets2"
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: ECSALBListenerRule
@@ -111,10 +108,14 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - !Ref Subnets
+        - !Fn::ImportValue:
+            !Sub "${AWS::StackName}-Subnets1"
+        - !Fn::ImportValue:
+            !Sub "${AWS::StackName}-Subnets2"
       Type: application
       SecurityGroups:
-        - !Ref SourceSecurityGroup
+        - !Fn::ImportValue:
+            !Sub "${AWS::StackName}-WebServerSecurityGroup"
   FrontDNSRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
@@ -167,7 +168,8 @@ Resources:
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: Fn::ImportValue: !Sub "${AWS::StackName}-VPC"
+      VpcId: Fn::ImportValue:
+        !Sub "${AWS::StackName}-VPC"
   ACMCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:

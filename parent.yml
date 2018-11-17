@@ -8,8 +8,6 @@ Parameters:
   SourceSecurityGroup:
     Type: List<AWS::EC2::SecurityGroup::Id>
     # Type: String
-  VPC:
-    Type: AWS::EC2::VPC::Id
   DBName:
     Default: MyDatabase
     Description: The database name
@@ -74,14 +72,11 @@ Resources:
         DBName: !Ref DBName
         DBUser: !Ref DBUser
         MultiAZ: !Ref MultiAZ
-        Subnets: !Join
-          - ','
-          - !Ref Subnets
-        EC2SecurityGroup: !Ref EC2SecurityGroup
-        VPC: !Ref VPC
   ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/ecs.yml
-      Parameters:
-        VPC: !Ref VPC
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: templates/vpc.yml
