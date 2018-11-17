@@ -72,10 +72,12 @@ Resources:
         DBName: !Ref DBName
         DBUser: !Ref DBUser
         MultiAZ: !Ref MultiAZ
+    DependsOn: !VPC
   ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/ecs.yml
+    DependsOn: !VPC
   VPC:
     Type: AWS::CloudFormation::Stack
     Properties:
