@@ -58,12 +58,12 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !Fn::ImportValue:
+            - Fn::ImportValue:
                 !Sub "${AWS::StackName}-WebServerSecurityGroup"
           Subnets:
-            - !Fn::ImportValue:
+            - Fn::ImportValue:
                 !Sub "${AWS::StackName}-Subnets1"
-            - !Fn::ImportValue:
+            - Fn::ImportValue:
                 !Sub "${AWS::StackName}-Subnets2"
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -108,13 +108,13 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - !Fn::ImportValue:
+        - Fn::ImportValue:
             !Sub "${AWS::StackName}-Subnets1"
-        - !Fn::ImportValue:
+        - Fn::ImportValue:
             !Sub "${AWS::StackName}-Subnets2"
       Type: application
       SecurityGroups:
-        - !Fn::ImportValue:
+        - Fn::ImportValue:
             !Sub "${AWS::StackName}-WebServerSecurityGroup"
   FrontDNSRecord:
     Type: AWS::Route53::RecordSetGroup
@@ -168,8 +168,9 @@ Resources:
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: Fn::ImportValue:
-        !Sub "${AWS::StackName}-VPC"
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${AWS::StackName}-VPC"
   ACMCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
