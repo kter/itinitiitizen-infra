@@ -1,8 +1,4 @@
 AWSTemplateFormatVersion: 2010-09-09
-Parameters:
-  SSHLocation:
-    Type: 'String'
-    Default: '36.2.76.229'
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
@@ -164,10 +160,6 @@ Resources:
             - !GetAtt 
               - ApplicationLoadBalancer
               - SecurityGroups
-        - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
-          CidrIp: !Ref SSHLocation
       VpcId: !Ref VpcId
   DBEC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
