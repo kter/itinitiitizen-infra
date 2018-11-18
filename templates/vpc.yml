@@ -165,7 +165,7 @@ Resources:
             - !GetAtt 
               - ApplicationLoadBalancer
               - SecurityGroups
-      VpcId: !Ref VpcId
+      VpcId: !Ref VPC
     DependsOn: VPC
   DBEC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -176,7 +176,7 @@ Resources:
           FromPort: '3306'
           ToPort: '3306'
           SourceSecurityGroupId: !Ref WebServerSecurityGroup
-      VpcId: !Ref VpcId
+      VpcId: !Ref VPC
     DependsOn: VPC
 Outputs:
   VPC:
