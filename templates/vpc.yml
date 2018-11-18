@@ -9,6 +9,7 @@ Resources:
           Value: !Ref 'AWS::StackId'
   Subnet1:
     Type: 'AWS::EC2::Subnet'
+    DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.0.0/24
@@ -17,6 +18,7 @@ Resources:
           Value: !Ref 'AWS::StackId'
   Subnet2:
     Type: 'AWS::EC2::Subnet'
+    DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.1.0/24
@@ -31,11 +33,13 @@ Resources:
           Value: !Ref 'AWS::StackId'
   AttachGateway:
     Type: 'AWS::EC2::VPCGatewayAttachment'
+    DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
   RouteTable:
     Type: 'AWS::EC2::RouteTable'
+    DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
       Tags:
@@ -60,6 +64,7 @@ Resources:
       RouteTableId: !Ref RouteTable
   NetworkAcl:
     Type: 'AWS::EC2::NetworkAcl'
+    DependsOn: VPC
     Properties:
       VpcId: !Ref VPC
       Tags:
@@ -161,6 +166,7 @@ Resources:
               - ApplicationLoadBalancer
               - SecurityGroups
       VpcId: !Ref VpcId
+    DependsOn: VPC
   DBEC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -171,6 +177,7 @@ Resources:
           ToPort: '3306'
           SourceSecurityGroupId: !Ref WebServerSecurityGroup
       VpcId: !Ref VpcId
+    DependsOn: VPC
 Outputs:
   VPC:
     Value: !Ref VPC
