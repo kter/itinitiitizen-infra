@@ -152,50 +152,16 @@ Resources:
     Properties:
       SubnetId: !Ref Subnet2
       NetworkAclId: !Ref NetworkAcl
-  WebServerSecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      GroupDescription: Enable HTTP access locked down to the load balancer + SSH access
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '80'
-          ToPort: '80'
-          SourceSecurityGroupId: !Select 
-            - 0
-            - !GetAtt 
-              - ApplicationLoadBalancer
-              - SecurityGroups
-      VpcId: !Ref VPC
-    DependsOn: VPC
-  DBEC2SecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      GroupDescription: Open database for access
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '3306'
-          ToPort: '3306'
-          SourceSecurityGroupId: !Ref WebServerSecurityGroup
-      VpcId: !Ref VPC
-    DependsOn: VPC
 Outputs:
   VPC:
     Value: !Ref VPC
     Export:
       Name: !Sub "${AWS::StackName}-VPC"
-  WebServerSecurityGroup:
-    Value: !Ref WebServerSecurityGroup
-    Export:
-      Name: !Sub "${AWS::StackName}-WebServerSecurityGroup"
-  DBEC2SecurityGroup:
-    Value: !GetAtt DBEC2SecurityGroup.GroupId
-    Export:
-      Name: !Sub "${AWS::StackName}-DBEC2SecurityGroupId"
   Subnet1:
-    Value: !GetAtt Subnet1
+    Value: !Ref Subnet1
     Export:
       Name: !Sub "${AWS::StackName}-Subnet1"
   Subnet2:
-    Value: !GetAtt Subnet2
+    Value: !Ref Subnet2
     Export:
       Name: !Sub "${AWS::StackName}-Subnet2"
