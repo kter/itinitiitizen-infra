@@ -163,9 +163,7 @@ Resources:
           FromPort: '80'
           ToPort: '80'
           CidrIp: 0.0.0.0/0
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${StackID}-VPC"
+      VpcId: !Ref VPC
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -175,9 +173,7 @@ Resources:
           FromPort: '80'
           ToPort: '80'
           SourceSecurityGroupId: !GetAtt ALBSecurityGroup.GroupId
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${StackID}-VPC"
+      VpcId: !Ref VPC
   DBEC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -187,9 +183,7 @@ Resources:
           FromPort: '3306'
           ToPort: '3306'
           SourceSecurityGroupId: !Ref WebServerSecurityGroup
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${StackID}-VPC"
+      VpcId: !Ref VPC
 Outputs:
   VPC:
     Value: !Ref VPC
