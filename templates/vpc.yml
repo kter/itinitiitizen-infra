@@ -158,6 +158,7 @@ Resources:
   ALBSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
+      GroupDescription: Security Group for ALB
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '80'
@@ -167,7 +168,7 @@ Resources:
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: Enable HTTP access locked down to the load balancer + SSH access
+      GroupDescription: Security Group for ECS
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '80'
@@ -177,7 +178,7 @@ Resources:
   DBEC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: Open database for access
+      GroupDescription: Security Group for RDS
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '3306'
