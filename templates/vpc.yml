@@ -16,6 +16,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.0.0/24
+      AvailabilityZone: "ap-northeast-1a"
       Tags:
         - Key: Application
           Value: !Ref 'AWS::StackId'
@@ -25,6 +26,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.1.0/24
+      AvailabilityZone: "ap-northeast-1b"
       Tags:
         - Key: Application
           Value: !Ref 'AWS::StackId'
