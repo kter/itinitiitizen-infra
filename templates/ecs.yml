@@ -64,9 +64,9 @@ Resources:
                 !Sub "${StackID}-WebServerSecurityGroup"
           Subnets:
             - Fn::ImportValue:
-                !Sub "${StackID}-Subnets1"
+                !Sub "${StackID}-Subnet1"
             - Fn::ImportValue:
-                !Sub "${StackID}-Subnets2"
+                !Sub "${StackID}-Subnet2"
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: ECSALBListenerRule
@@ -111,9 +111,9 @@ Resources:
     Properties:
       Subnets:
         - Fn::ImportValue:
-            !Sub "${StackID}-Subnets1"
+            !Sub "${StackID}-Subnet1"
         - Fn::ImportValue:
-            !Sub "${StackID}-Subnets2"
+            !Sub "${StackID}-Subnet2"
       Type: application
       SecurityGroups:
         - Fn::ImportValue:
