@@ -24,6 +24,9 @@ Parameters:
     Default: 'false'
     AllowedValues: ['true', 'false']
     ConstraintDescription: must be true or false.
+  StackID:
+    Type: String
+    Default: 'itizen'
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -60,13 +63,18 @@ Resources:
         DBName: !Ref DBName
         DBUser: !Ref DBUser
         MultiAZ: !Ref MultiAZ
+        StackID: !Ref StackID
     DependsOn: VPC
   ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/ecs.yml
+      Parameters:
+        StackID: !Ref StackID
     DependsOn: VPC
   VPC:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: templates/vpc.yml
+      Parameters:
+        StackID: !Ref StackID

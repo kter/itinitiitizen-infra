@@ -20,11 +20,13 @@ Parameters:
     Description: Domain name
     Type: String
     Default: "kter.jp"
+  StackID:
+    Type: String
 Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Ref AWS::StackName
+      ClusterName: !Ref StackID
   TaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -41,7 +43,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /ecs/${AWS::StackName}
+      LogGroupName: !Sub /ecs/${StackID}
   ECSService:
     Type: AWS::ECS::Service
     DependsOn: TaskDefinition
@@ -59,17 +61,17 @@ Resources:
           AssignPublicIp: ENABLED
           SecurityGroups:
             - Fn::ImportValue:
-                !Sub "${AWS::StackName}-WebServerSecurityGroup"
+                !Sub "${StackID}-WebServerSecurityGroup"
           Subnets:
             - Fn::ImportValue:
-                !Sub "${AWS::StackName}-Subnets1"
+                !Sub "${StackID}-Subnets1"
             - Fn::ImportValue:
-                !Sub "${AWS::StackName}-Subnets2"
+                !Sub "${StackID}-Subnets2"
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: ECSALBListenerRule
     Properties:
-      Family: !Sub ${AWS::StackName}-app-web
+      Family: !Sub ${StackID}-app-web
       Memory: 512
       Cpu: 256
       NetworkMode: awsvpc
@@ -95,7 +97,7 @@ Resources:
             Options:
               awslogs-region: !Ref AWS::Region
               awslogs-group: !Ref LogGroup
-              awslogs-stream-prefix: !Ref AWS::StackName
+              awslogs-stream-prefix: !Ref StackID
         # - Name: web
         #   Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/web:latest
         #   Essential: true
@@ -109,9 +111,9 @@ Resources:
     Properties:
       Subnets:
         - Fn::ImportValue:
-            !Sub "${AWS::StackName}-Subnets1"
+            !Sub "${StackID}-Subnets1"
         - Fn::ImportValue:
-            !Sub "${AWS::StackName}-Subnets2"
+            !Sub "${StackID}-Subnets2"
       Type: application
       SecurityGroups:
         - !Ref ALBSecurityGroup
@@ -169,7 +171,7 @@ Resources:
       UnhealthyThresholdCount: 2
       VpcId:
         Fn::ImportValue:
-          !Sub "${AWS::StackName}-VPC"
+          !Sub "${StackID}-VPC"
   ACMCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -196,7 +198,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       VpcId:
         Fn::ImportValue:
-          !Sub "${AWS::StackName}-VPC"
+          !Sub "${StackID}-VPC"
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -208,7 +210,7 @@ Resources:
           SourceSecurityGroupId: !GetAtt ItizenALB.SecurityGroups
       VpcId:
         Fn::ImportValue:
-          !Sub "${AWS::StackName}-VPC"
+          !Sub "${StackID}-VPC"
   DBEC2SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -220,22 +222,22 @@ Resources:
           SourceSecurityGroupId: !Ref WebServerSecurityGroup
       VpcId:
         Fn::ImportValue:
-          !Sub "${AWS::StackName}-VPC"
+          !Sub "${StackID}-VPC"
 Outputs:
   ECSService:
     Value: !Ref ECSService
     Export:
-      Name: !Sub "${AWS::StackName}-ECSService"
+      Name: !Sub "${StackID}-ECSService"
   ECSCluster:
     Value: !Ref ECSCluster
     Export:
-      Name: !Sub "${AWS::StackName}-ECSCluster"
+      Name: !Sub "${StackID}-ECSCluster"
   WebServerSecurityGroup:
     Value: !Ref WebServerSecurityGroup
     Export:
-      Name: !Sub "${AWS::StackName}-WebServerSecurityGroup"
+      Name: !Sub "${StackID}-WebServerSecurityGroup"
   DBEC2SecurityGroup:
     Value: !GetAtt DBEC2SecurityGroup.GroupId
     Export:
-      Name: !Sub "${AWS::StackName}-DBEC2SecurityGroupId"
+      Name: !Sub "${StackID}-DBEC2SecurityGroupId"
 

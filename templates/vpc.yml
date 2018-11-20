@@ -1,4 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  StackID:
+    Type: String
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
@@ -156,12 +159,12 @@ Outputs:
   VPC:
     Value: !Ref VPC
     Export:
-      Name: !Sub "${AWS::StackName}-VPC"
+      Name: !Sub "${StackID}-VPC"
   Subnet1:
     Value: !Ref Subnet1
     Export:
-      Name: !Sub "${AWS::StackName}-Subnet1"
+      Name: !Sub "${StackID}-Subnet1"
   Subnet2:
     Value: !Ref Subnet2
     Export:
-      Name: !Sub "${AWS::StackName}-Subnet2"
+      Name: !Sub "${StackID}-Subnet2"

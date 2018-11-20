@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: '2010-09-09'
 Metadata: 
   License: Apache-2.0
 Parameters:
+  StackID:
+    Type: String
   DBName:
     Default: MyDatabase
     Description: The database name
@@ -42,9 +44,9 @@ Resources:
       DBSubnetGroupDescription: "DB SubnetGroup for itizen"
       SubnetIds:
         - Fn::ImportValue:
-            !Sub "${AWS::StackName}-Subnet1"
+            !Sub "${StackID}-Subnet1"
         - Fn::ImportValue:
-            !Sub "${AWS::StackName}-Subnet2"
+            !Sub "${StackID}-Subnet2"
   MasterDB:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -60,7 +62,7 @@ Resources:
         Value: Master Database
       VPCSecurityGroups:
         - Fn::ImportValue:
-            !Sub "${AWS::StackName}-DBEC2SecurityGroupId"
+            !Sub "${StackID}-DBEC2SecurityGroupId"
       DBSubnetGroupName: !Ref DBSubnetGroup
     DeletionPolicy: Snapshot
   FrontDNSRecord:

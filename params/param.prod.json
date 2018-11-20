@@ -2,6 +2,7 @@
     "Parameters": {
         "DBName": "itizen",
         "DBUser": "itizen",
-        "MultiAZ": "false"
+        "MultiAZ": "false",
+        "StackID": "itizen"
     }
 }
