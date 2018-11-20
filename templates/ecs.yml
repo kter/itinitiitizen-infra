@@ -116,7 +116,8 @@ Resources:
             !Sub "${StackID}-Subnets2"
       Type: application
       SecurityGroups:
-        - !Ref ALBSecurityGroup
+        - Fn::ImportValue:
+            !Sub "${StackID}-ALBSecurityGroup"
   FrontDNSRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
@@ -188,41 +189,6 @@ Resources:
               - !Ref DNSDomain
           ValidationDomain: !Ref DNSDomain
       ValidationMethod: DNS
-  ALBSecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '80'
-          ToPort: '80'
-          CidrIp: 0.0.0.0/0
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${StackID}-VPC"
-  WebServerSecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      GroupDescription: Enable HTTP access locked down to the load balancer + SSH access
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '80'
-          ToPort: '80'
-          SourceSecurityGroupId: !GetAtt ItizenALB.SecurityGroups
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${StackID}-VPC"
-  DBEC2SecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      GroupDescription: Open database for access
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '3306'
-          ToPort: '3306'
-          SourceSecurityGroupId: !Ref WebServerSecurityGroup
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${StackID}-VPC"
 Outputs:
   ECSService:
     Value: !Ref ECSService
@@ -232,12 +198,3 @@ Outputs:
     Value: !Ref ECSCluster
     Export:
       Name: !Sub "${StackID}-ECSCluster"
-  WebServerSecurityGroup:
-    Value: !Ref WebServerSecurityGroup
-    Export:
-      Name: !Sub "${StackID}-WebServerSecurityGroup"
-  DBEC2SecurityGroup:
-    Value: !GetAtt DBEC2SecurityGroup.GroupId
-    Export:
-      Name: !Sub "${StackID}-DBEC2SecurityGroupId"
-
