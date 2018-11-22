@@ -98,6 +98,12 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-group: !Ref LogGroup
               awslogs-stream-prefix: !Ref StackID
+          #Environment:
+          #  - Name: ITIZEN_DATABASE_PASSWORD
+          #    Value: 
+          Secrets:
+            - Name: "ITIZEN_DATABASE_PASSWORD"
+              ValueFrom: "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec"
         # - Name: web
         #   Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/web:latest
         #   Essential: true
