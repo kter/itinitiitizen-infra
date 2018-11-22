@@ -55,7 +55,7 @@ Resources:
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       TaskDefinition: !Ref TaskDefinition
-      LaunchType: FARGATE
+      LaunchType: EC2
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
