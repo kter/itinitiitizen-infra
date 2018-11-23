@@ -104,6 +104,8 @@ Resources:
               Value: REPLACE_ME_MANUALLY
             - Name: RAILS_ENV
               Value: production
+            - Name: RAILS_MASTER_KEY
+              Value: REPLACE_ME_MANUALLY
           # Encountered unsupported property Secret / Secrets
           # Secret:
           #   - Name: "ITIZEN_DATABASE_PASSWORD"
