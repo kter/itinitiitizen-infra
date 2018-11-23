@@ -55,7 +55,7 @@ Resources:
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       TaskDefinition: !Ref TaskDefinition
-      # Fargateの場合NetworkConfigurationの設定と、TaskDefinitionのNetworkModeをawsvpcに設定する必要がある
+      # Fargateの場合NetworkConfigurationの設定と、TaskDefinitionのNetworkModeをawsvpcに、TargetGroupのTargetTypeをipに設定する必要がある
       # LaunchType: FARGATE
       LaunchType: EC2
       # NetworkConfiguration:
@@ -176,7 +176,7 @@ Resources:
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
-      TargetType: ip
+      # TargetType: ip
       Name: ECSTG
       Port: 80
       Protocol: HTTP
