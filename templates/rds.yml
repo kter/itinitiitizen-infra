@@ -53,7 +53,8 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBSnapshotIdentifier: !Ref RDSSnapshotID
-      DBName: !Ref 'DBName'
+      # DBSnapshotIdentifierを指定する場合はDBNameを指定してはいけない。エラーになる
+      # DBName: !Ref 'DBName'
       AllocatedStorage: 5
       DBInstanceClass: db.t2.micro
       Engine: MySQL
