@@ -57,7 +57,6 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
       # Fargateの場合NetworkConfigurationの設定と、TaskDefinitionのNetworkModeをawsvpcに、TargetGroupのTargetTypeをipに設定する必要がある
       LaunchType: FARGATE
-      LaunchType: EC2
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
