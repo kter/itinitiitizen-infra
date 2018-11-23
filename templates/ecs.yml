@@ -55,6 +55,7 @@ Resources:
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       TaskDefinition: !Ref TaskDefinition
+      # Fargateの場合NetworkConfigurationの設定と、TaskDefinitionのNetworkModeをawsvpcに設定する必要がある
       # LaunchType: FARGATE
       LaunchType: EC2
       # NetworkConfiguration:
@@ -75,7 +76,7 @@ Resources:
       Family: !Sub ${StackID}-app-web
       Memory: 512
       Cpu: 256
-      NetworkMode: awsvpc
+      # NetworkMode: awsvpc
       ExecutionRoleArn: !Ref TaskExecutionRole
       ContainerDefinitions:
         - Name: app
