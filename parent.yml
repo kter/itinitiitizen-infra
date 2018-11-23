@@ -63,6 +63,7 @@ Resources:
     Properties:
       TemplateURL: templates/rds.yml
       Parameters:
+        RDSSnapshotID: !Ref RDSSnapshotID
         DBName: !Ref DBName
         DBUser: !Ref DBUser
         MultiAZ: !Ref MultiAZ
