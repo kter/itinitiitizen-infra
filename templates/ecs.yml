@@ -56,19 +56,19 @@ Resources:
         TargetGroupArn: !Ref 'ECSTG'
       TaskDefinition: !Ref TaskDefinition
       # Fargateの場合NetworkConfigurationの設定と、TaskDefinitionのNetworkModeをawsvpcに、TargetGroupのTargetTypeをipに設定する必要がある
-      # LaunchType: FARGATE
+      LaunchType: FARGATE
       LaunchType: EC2
-      # NetworkConfiguration:
-      #   AwsvpcConfiguration:
-      #     AssignPublicIp: ENABLED
-      #     SecurityGroups:
-      #       - Fn::ImportValue:
-      #           !Sub "${StackID}-WebServerSecurityGroup"
-      #     Subnets:
-      #       - Fn::ImportValue:
-      #           !Sub "${StackID}-Subnet1"
-      #       - Fn::ImportValue:
-      #           !Sub "${StackID}-Subnet2"
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - Fn::ImportValue:
+                !Sub "${StackID}-WebServerSecurityGroup"
+          Subnets:
+            - Fn::ImportValue:
+                !Sub "${StackID}-Subnet1"
+            - Fn::ImportValue:
+                !Sub "${StackID}-Subnet2"
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: ECSALBListenerRule
@@ -76,7 +76,7 @@ Resources:
       Family: !Sub ${StackID}-app-web
       Memory: 512
       Cpu: 256
-      # NetworkMode: awsvpc
+      NetworkMode: awsvpc
       ExecutionRoleArn: !Ref TaskExecutionRole
       ContainerDefinitions:
         - Name: app
@@ -176,7 +176,7 @@ Resources:
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
-      # TargetType: ip
+      TargetType: ip
       Name: ECSTG
       Port: 80
       Protocol: HTTP
