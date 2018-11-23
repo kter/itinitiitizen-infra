@@ -98,12 +98,15 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-group: !Ref LogGroup
               awslogs-stream-prefix: !Ref StackID
-          #Environment:
-          #  - Name: ITIZEN_DATABASE_PASSWORD
-          #    Value: 
-          Secret:
-            - Name: "ITIZEN_DATABASE_PASSWORD"
-              ValueFrom: "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec"
+          Environment:
+            - Name: ITIZEN_DATABASE_PASSWORD
+              Value: REPLACE_ME_MANUALLY
+            - Name: RAILS_ENV
+              Value: production
+          # Encountered unsupported property Secret / Secrets
+          # Secret:
+          #   - Name: "ITIZEN_DATABASE_PASSWORD"
+          #     ValueFrom: "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec"
         # - Name: web
         #   Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/web:latest
         #   Essential: true
