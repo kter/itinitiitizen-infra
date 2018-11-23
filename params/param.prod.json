@@ -1,5 +1,6 @@
 {
     "Parameters": {
+        "RDSSnapshotID": "itizen-itinital-db",
         "DBName": "itizen",
         "DBUser": "itizen",
         "MultiAZ": "false",

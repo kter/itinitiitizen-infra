@@ -80,6 +80,8 @@ Resources:
       ContainerDefinitions:
         - Name: app
           Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/app-itizen:latest
+          # db:migrate検討
+          # $ bundle exec rake assets:precompile RAILS_ENV=production
           EntryPoint:
             - bundle
             - exec

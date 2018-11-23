@@ -2,6 +2,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
+  RDSSnapshotID:
+    Default: "itizen-itinital-db"
+    Type: String
   DBName:
     Default: MyDatabase
     Description: The database name

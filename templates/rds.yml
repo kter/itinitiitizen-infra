@@ -4,6 +4,8 @@ Metadata:
 Parameters:
   StackID:
     Type: String
+  RDSSnapshotID:
+    Type: String
   DBName:
     Default: MyDatabase
     Description: The database name
@@ -50,6 +52,7 @@ Resources:
   MasterDB:
     Type: AWS::RDS::DBInstance
     Properties:
+      DBSnapshotIdentifier: !Ref RDSSnapshotID
       DBName: !Ref 'DBName'
       AllocatedStorage: 5
       DBInstanceClass: db.t2.micro
