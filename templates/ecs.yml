@@ -55,18 +55,19 @@ Resources:
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       TaskDefinition: !Ref TaskDefinition
+      # LaunchType: FARGATE
       LaunchType: EC2
-      NetworkConfiguration:
-        AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
-          SecurityGroups:
-            - Fn::ImportValue:
-                !Sub "${StackID}-WebServerSecurityGroup"
-          Subnets:
-            - Fn::ImportValue:
-                !Sub "${StackID}-Subnet1"
-            - Fn::ImportValue:
-                !Sub "${StackID}-Subnet2"
+      # NetworkConfiguration:
+      #   AwsvpcConfiguration:
+      #     AssignPublicIp: ENABLED
+      #     SecurityGroups:
+      #       - Fn::ImportValue:
+      #           !Sub "${StackID}-WebServerSecurityGroup"
+      #     Subnets:
+      #       - Fn::ImportValue:
+      #           !Sub "${StackID}-Subnet1"
+      #       - Fn::ImportValue:
+      #           !Sub "${StackID}-Subnet2"
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: ECSALBListenerRule
