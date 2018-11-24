@@ -80,13 +80,8 @@ Resources:
       ContainerDefinitions:
         - Name: app
           Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/app-itizen:latest
-          # TODO: db:migrateはone-off taskのほうがいいかも？
+          # TODO: db:migrateはone-off taskで行う
           EntryPoint:
-            - bundle
-            - exec
-            - rails
-            - db:migrate
-            - '&&'
             - bundle
             - exec
             - rails
