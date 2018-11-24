@@ -4,14 +4,6 @@
 validate:
 	aws cloudformation validate-template --template-body file://parent.yml
 
-pipeline-create:validate
-	aws cloudformation create-stack --stack-name infra-itizen \
-	--template-body file://parent.yml \
-	--capabilities CAPABILITY_IAM
-pipeline-update:validate
-	aws cloudformation update-stack \
-	--stack-name infra-itizen \
-	--template-body file://parent.yml \
-	--capabilities CAPABILITY_IAM
-pipeline-delete:
-	aws cloudformation delete-stack --stack-name infra-itizen
+# 作成はパイプラインが行う。
+delete:
+	aws cloudformation delete-stack --stack-name infra-itizen-prod
