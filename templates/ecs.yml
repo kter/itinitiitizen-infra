@@ -39,6 +39,19 @@ Resources:
               Service: ecs-tasks.amazonaws.com
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      Path: /
+      Policies:
+        - PolicyName: SSMAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: SSMAccess
+                Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource:
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ITIZEN_RAILS_MASTER_KEY
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:itizen_rds_password_sec
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -100,16 +113,12 @@ Resources:
               awslogs-group: !Ref LogGroup
               awslogs-stream-prefix: !Ref StackID
           Environment:
-            - Name: ITIZEN_DATABASE_PASSWORD
-              Value: REPLACE_ME_MANUALLY
             - Name: RAILS_ENV
               Value: production
             - Name: RAILS_MASTER_KEY
-              Value: REPLACE_ME_MANUALLY
-          # Encountered unsupported property Secret / Secrets
-          # Secret:
-          #   - Name: "ITIZEN_DATABASE_PASSWORD"
-          #     ValueFrom: "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec"
+              ValueFrom: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/ITIZEN_RAILS_MASTER_KEY
+            - Name: ITIZEN_DATABASE_PASSWORD
+              ValueFrom: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec
         # - Name: web
         #   Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/web:latest
         #   Essential: true
