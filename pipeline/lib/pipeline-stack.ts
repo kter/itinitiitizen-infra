@@ -27,6 +27,56 @@ export class PipelineStack extends Stack {
       },
     });
 
+    infraBuild.addToRolePolicy(new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: [
+            'cloudformation:ValidateTemplate',
+          ],
+          resources:['*']
+        }
+    ));
+
+    // const CodeBuildRole: Role = new Role(
+    //     this,
+    //     'CodeBuildRole',
+    //     {
+    //       assumedBy: new ServicePrincipal('codebuild.amazonaws.com')
+    //     }
+    // );
+
+    // // CodeBuildRole.addToPolicy(new PolicyStatement({
+    // //   effect: Effect.ALLOW,
+    // //   actions: [
+    // //     'logs:CreateLogGroup',
+    // //     'logs:CreateLogStream',
+    // //     'logs:PutLogEvents',
+    // //   ],
+    // //   resources:[`arn:aws:logs:${region}:${accountId}:log-group:/aws/codebuild/*`]
+    // // }));
+    // CodeBuildRole.addToPolicy(
+    //     new PolicyStatement({
+    //       effect: Effect.ALLOW,
+    //       actions: [
+    //         'cloudformation:ValidateTemplate',
+    //       ],
+    //       resources:['*']
+    //     })
+    // );
+    // // CodeBuildRole.addToPolicy(new PolicyStatement({
+    // //   effect: Effect.ALLOW,
+    // //   actions: [
+    // //     's3:PutObject',
+    // //     's3:GetObject',
+    // //     's3:GetObjectVersion',
+    // //   ],
+    // //   resources:[
+    // //     'arn:aws:s3:::${ArtifactStoreBucket}',
+    // //     'arn:aws:s3:::${ArtifactStoreBucket}/*',
+    // //     'arn:aws:s3:::${CodeBuildBucket}',
+    // //     'arn:aws:s3:::${CodeBuildBucket}/*'
+    // //   ]
+    // // }));
+
     const sourceOutput = new codepipeline.Artifact();
     const testOutput = new codepipeline.Artifact();
     new codepipeline.Pipeline(this, 'Pipeline', {
@@ -60,7 +110,7 @@ export class PipelineStack extends Stack {
   }
 
   private createSourceAction(owner: string, repositoryName: string, branch: string, sourceOutput: codepipeline.Artifact): codepipeline_actions.GitHubSourceAction {
-    const gitHubOAuthToken = ssm.StringParameter.valueForStringParameter(this, 'githubOAuthToken');
+    const gitHubOAuthToken = ssm.StringParameter.valueForStringParameter(this, 'github_token_codepipeline');
 
     return new codepipeline_actions.GitHubSourceAction ({
       actionName: 'Github',
@@ -82,19 +132,6 @@ export class PipelineStack extends Stack {
   }
 
   private createBuildAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationCreateReplaceChangeSetAction {
-    const SamDeploymentRole: Role = new Role(this, 'SamRole', {
-      assumedBy: new ServicePrincipal('cloudformation.amazonaws.com')
-    });
-    SamDeploymentRole.addToPolicy(new PolicyStatement({
-      effect: Effect.ALLOW,
-      actions: [
-        's3:*',
-        'events:*',
-        'iam:*',
-        'cloudformation:*',
-      ],
-      resources:['*']
-    }));
 
     return new codepipeline_actions.CloudFormationCreateReplaceChangeSetAction({
       actionName: "ChangeSetCreate",
