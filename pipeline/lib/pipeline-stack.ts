@@ -81,7 +81,7 @@ export class PipelineStack extends Stack {
     });
   }
 
-  private createBuildAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CodeBuildAction {
+  private createBuildAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationCreateReplaceChangeSetAction {
     const SamDeploymentRole: Role = new Role(this, 'SamRole', {
       assumedBy: new ServicePrincipal('cloudformation.amazonaws.com')
     });
@@ -97,13 +97,16 @@ export class PipelineStack extends Stack {
     }));
 
     return new codepipeline_actions.CloudFormationCreateReplaceChangeSetAction({
+      actionName: "ChangeSetCreate",
+      adminPermissions: false,
+      stackName: 'infraDeploymentStack',
       changeSetName: 'InfraChangeSet',
       templatePath: sourceInput.atPath('infra-buildspec.yml')
     });
   }
 
-  private createDeployAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CodeBuildAction {
-    new codepipeline_actions.CloudFormationCreateUpdateStackAction({
+  private createDeployAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationCreateUpdateStackAction {
+    return new codepipeline_actions.CloudFormationCreateUpdateStackAction({
       actionName: 'Deploy',
       templatePath: sourceInput.atPath('infra-buildspec.yml'),
       stackName: 'infraDeploymentStack',
