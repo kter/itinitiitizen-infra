@@ -2,8 +2,8 @@ import * as codebuild from '@aws-cdk/aws-codebuild';
 import * as cloudformation from '@aws-cdk/aws-cloudformation';
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
-import { App, Stack, StackProps } from '@aws-cdk/core';
-import * as StringParameter from '@aws-cdk/aws-ssm';
+import { App, Stack, StackProps, SecretValue } from '@aws-cdk/core';
+import * as ssm from '@aws-cdk/aws-ssm';
 import { Role, PolicyStatement, Effect, ServicePrincipal}from '@aws-cdk/aws-iam';
 
 
@@ -60,14 +60,14 @@ export class PipelineStack extends Stack {
   }
 
   private createSourceAction(owner: string, repositoryName: string, branch: string, sourceOutput: codepipeline.Artifact): codepipeline_actions.GitHubSourceAction {
-    const gitHubOAuthToken = StringParameter.valueForStringParameter(this, 'githubOAuthToken');
+    const gitHubOAuthToken = ssm.StringParameter.valueForStringParameter(this, 'githubOAuthToken');
 
     return new codepipeline_actions.GitHubSourceAction ({
       actionName: 'Github',
       owner: owner,
       repo: repositoryName,
       branch: branch,
-      oauthToken: gitHubOAuthToken,
+      oauthToken: SecretValue.plainText(gitHubOAuthToken),
       output: sourceOutput,
     });
   }
@@ -97,28 +97,18 @@ export class PipelineStack extends Stack {
     }));
 
     return new codepipeline_actions.CloudFormationCreateReplaceChangeSetAction({
-      actionName: 'ChangeSet',
-      'changeset',
-      runOrder: 1,
-      stackName: 'infraDeploymentStack',
-      templatePath: sourceInput.atPath('infra-buildspec.yml'),
-      adminPermissions: true,
-      deploymentRole: SamDeploymentRole,
-      capabilities: [cloudformation.CloudFormationCapabilities.NAMED_IAM],
-      input: [sourceInput],
-      outputs: [sourceOutput],
+      changeSetName: 'InfraChangeSet',
+      templatePath: sourceInput.atPath('infra-buildspec.yml')
     });
   }
 
   private createDeployAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CodeBuildAction {
     new codepipeline_actions.CloudFormationCreateUpdateStackAction({
       actionName: 'Deploy',
-      'changeset',
       templatePath: sourceInput.atPath('infra-buildspec.yml'),
       stackName: 'infraDeploymentStack',
       adminPermissions: true,
-      input: [sourceInput],
-      outputs: [sourceOutput],
+      output: sourceOutput,
     });
   }
 }
