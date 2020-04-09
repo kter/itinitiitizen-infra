@@ -4,9 +4,11 @@ import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
 import { App, Stack, StackProps, SecretValue } from '@aws-cdk/core';
 import * as ssm from '@aws-cdk/aws-ssm';
+import * as s3 from '@aws-cdk/aws-s3';
 import { Role, PolicyStatement, Effect, ServicePrincipal}from '@aws-cdk/aws-iam';
 
 
+// TODO: 規定の変数はないか？
 const ownerName = 'kter';
 const repositoryName = "itinitiitizen-infra";
 const branch = 'master';
@@ -17,10 +19,20 @@ export class PipelineStack extends Stack {
   constructor(app: App, id: string, props?: StackProps) {
     super(app, id, props);
 
+    const s3BucketName = `itinitiitizen-infra-artifact-${this.stackName}`.toLowerCase();
+    const s3Bucket = new s3.Bucket(
+        this,
+        s3BucketName,
+        {
+          bucketName: s3BucketName
+        }
+    );
+
     const infraBuild = new codebuild.PipelineProject(this, 'infraBuild', {
       buildSpec: codebuild.BuildSpec.fromSourceFilename('infra-buildspec.yml'),
       environmentVariables: {
         AWS_REGION: { value: awsRegion },
+        S3_BUCKET: { value: s3BucketName },
       },
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
