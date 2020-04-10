@@ -65,29 +65,18 @@ export class PipelineStack extends Stack {
     // //   ],
     // //   resources:[`arn:aws:logs:${region}:${accountId}:log-group:/aws/codebuild/*`]
     // // }));
-    // CodeBuildRole.addToPolicy(
-    //     new PolicyStatement({
-    //       effect: Effect.ALLOW,
-    //       actions: [
-    //         'cloudformation:ValidateTemplate',
-    //       ],
-    //       resources:['*']
-    //     })
-    // );
-    // // CodeBuildRole.addToPolicy(new PolicyStatement({
-    // //   effect: Effect.ALLOW,
-    // //   actions: [
-    // //     's3:PutObject',
-    // //     's3:GetObject',
-    // //     's3:GetObjectVersion',
-    // //   ],
-    // //   resources:[
-    // //     'arn:aws:s3:::${ArtifactStoreBucket}',
-    // //     'arn:aws:s3:::${ArtifactStoreBucket}/*',
-    // //     'arn:aws:s3:::${CodeBuildBucket}',
-    // //     'arn:aws:s3:::${CodeBuildBucket}/*'
-    // //   ]
-    // // }));
+    infraBuild.addToRolePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        's3:PutObject',
+        's3:GetObject',
+        's3:GetObjectVersion',
+      ],
+      resources:[
+        `arn:aws:s3:::${s3BucketName}`,
+        `arn:aws:s3:::${s3BucketName}/*`
+      ]
+    }));
 
     const sourceOutput = new codepipeline.Artifact();
     const testOutput = new codepipeline.Artifact();
