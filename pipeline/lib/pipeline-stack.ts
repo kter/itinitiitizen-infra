@@ -139,17 +139,16 @@ export class PipelineStack extends Stack {
       adminPermissions: false,
       stackName: 'infraDeploymentStack',
       changeSetName: 'InfraChangeSet',
-      templatePath: sourceInput.atPath('infra-buildspec.yml')
+      templatePath: sourceInput.atPath('packaged.yml'),
+      templateConfiguration: sourceInput.atPath('param.prod.json')
     });
   }
 
-  private createDeployAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationCreateUpdateStackAction {
-    return new codepipeline_actions.CloudFormationCreateUpdateStackAction({
+  private createDeployAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationExecuteChangeSetAction {
+    return new codepipeline_actions.CloudFormationExecuteChangeSetAction({
+      changeSetName: "InfraChangeSet",
       actionName: 'Deploy',
-      templatePath: sourceInput.atPath('infra-buildspec.yml'),
-      stackName: 'infraDeploymentStack',
-      adminPermissions: true,
-      output: sourceOutput,
+      stackName: 'infraDeploymentStack'
     });
   }
 }
