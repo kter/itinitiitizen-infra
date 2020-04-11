@@ -97,13 +97,13 @@ export class PipelineStack extends Stack {
         {
           stageName: 'Build',
           actions: [
-            this.createBuildAction(infraBuild, testOutput, sourceOutput)
+            this.createBuildAction(testOutput)
           ],
         },
         {
           stageName: 'Deploy',
           actions: [
-            this.createDeployAction(infraBuild, sourceOutput, testOutput)
+            this.createDeployAction()
           ],
         },
       ],
@@ -132,7 +132,7 @@ export class PipelineStack extends Stack {
     });
   }
 
-  private createBuildAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationCreateReplaceChangeSetAction {
+  private createBuildAction(sourceInput: codepipeline.Artifact, ): codepipeline_actions.CloudFormationCreateReplaceChangeSetAction {
 
     return new codepipeline_actions.CloudFormationCreateReplaceChangeSetAction({
       actionName: "ChangeSetCreate",
@@ -144,7 +144,7 @@ export class PipelineStack extends Stack {
     });
   }
 
-  private createDeployAction(infraBuild: codebuild.PipelineProject, sourceInput: codepipeline.Artifact, sourceOutput: codepipeline.Artifact): codepipeline_actions.CloudFormationExecuteChangeSetAction {
+  private createDeployAction(): codepipeline_actions.CloudFormationExecuteChangeSetAction {
     return new codepipeline_actions.CloudFormationExecuteChangeSetAction({
       changeSetName: "InfraChangeSet",
       actionName: 'Deploy',
