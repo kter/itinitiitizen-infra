@@ -1,6 +1,6 @@
 {
     "Parameters": {
-        "RDSSnapshotID": "itizen-itinital-db",
+        "RDSSnapshotID": "infra-itizen-prod-rds-1ijzi7s9taag3-snapshot-masterdb-7v29ggva4xld",
         "DBName": "itizen",
         "DBUser": "itizen",
         "MultiAZ": "false",
