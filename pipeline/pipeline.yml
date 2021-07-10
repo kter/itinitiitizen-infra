@@ -10,7 +10,7 @@ Parameters:
   EmailAddress:
     Description: Email Address
     Type: String
-    Default: "me@kter.jp"
+    Default: "takahashi@tomohiko.io"
   Repo:
     Type: String
     Default: itinitiitizen-infra
