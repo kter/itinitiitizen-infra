@@ -14,11 +14,11 @@ Parameters:
   DNSHostedZone:
     Description: Domain name
     Type: String
-    Default: "kter.jp."
+    Default: "tomohiko.io."
   DNSDomain:
     Description: Domain name
     Type: String
-    Default: "kter.jp"
+    Default: "tomohiko.io"
   StackID:
     Type: String
 Resources:
