@@ -6,7 +6,6 @@ Parameters:
     Type: String
   RDSSnapshotID:
     Type: String
-    Default: infra-itizen-prod-rds-1ijzi7s9taag3-snapshot-masterdb-7v29ggva4xld
   DBName:
     Default: MyDatabase
     Description: The database name
