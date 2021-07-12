@@ -10,7 +10,7 @@ Parameters:
   DesiredCount:
     Description: ECS desired count
     Type: Number
-    Default: 0
+    Default: 1
   DNSHostedZone:
     Description: Domain name
     Type: String
@@ -91,7 +91,7 @@ Resources:
       ExecutionRoleArn: !Ref TaskExecutionRole
       ContainerDefinitions:
         - Name: app
-          Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/app-itizen:latest
+          Image: kter/itinitiitizen:latest
           # TODO: db:migrateはone-off taskで行う
           EntryPoint:
             - bundle
