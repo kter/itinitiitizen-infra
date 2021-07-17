@@ -62,7 +62,7 @@ Resources:
                 Action:
                   - ssm:GetParameters
                 Resource:
-                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/ITIZEN_RAILS_MASTER_KEY
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/ITIZEN_RAILS_SECRET_KEY_BASE
                   - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec
   LogGroup:
     Type: AWS::Logs::LogGroup
@@ -129,7 +129,7 @@ Resources:
             - Name: RAILS_ENV
               Value: production
           Secrets:
-            - { Name: 'RAILS_MASTER_KEY', ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/ITIZEN_RAILS_MASTER_KEY" }
+            - { Name: 'SECRET_KEY_BASE', ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/ITIZEN_RAILS_SECRET_KEY_BASE" }
             - { Name: 'ITIZEN_DATABASE_PASSWORD', ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/itizen_rds_password_sec" }
         # - Name: web
         #   Image: 848738341109.dkr.ecr.us-east-1.amazonaws.com/web:latest
