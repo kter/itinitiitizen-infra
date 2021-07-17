@@ -40,6 +40,18 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
       Path: /
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+      Path: /
       Policies:
         - PolicyName: SSMAccess
           PolicyDocument:
@@ -89,6 +101,7 @@ Resources:
       Cpu: 256
       NetworkMode: awsvpc
       ExecutionRoleArn: !Ref TaskExecutionRole
+      TaskRoleArn: !Ref TaskRole
       ContainerDefinitions:
         - Name: app
           Image: kter/itinitiitizen:latest
