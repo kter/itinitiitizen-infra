@@ -3,10 +3,6 @@ Parameters:
   #   Default: "web"
   #   Description: "Name of ECR"
   #   Type: String
-  AppImageRepositoryName:
-    Default: "app-itizen"
-    Description: "Name of ECR"
-    Type: String
   DesiredCount:
     Description: ECS desired count
     Type: Number
@@ -39,7 +35,6 @@ Resources:
               Service: ecs-tasks.amazonaws.com
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-      Path: /
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
@@ -51,7 +46,6 @@ Resources:
             Effect: Allow
             Principal:
               Service: ecs-tasks.amazonaws.com
-      Path: /
       Policies:
         - PolicyName: SSMAccess
           PolicyDocument:
@@ -70,13 +64,12 @@ Resources:
       LogGroupName: !Sub /ecs/${StackID}
   ECSService:
     Type: AWS::ECS::Service
-    DependsOn: TaskDefinition
     Properties:
       Cluster: !Ref ECSCluster
       DesiredCount: !Ref DesiredCount
       LoadBalancers:
       - ContainerName: app
-        ContainerPort: '80'
+        ContainerPort: 80
         TargetGroupArn: !Ref 'ECSTG'
       TaskDefinition: !Ref TaskDefinition
       # Fargateの場合NetworkConfigurationの設定と、TaskDefinitionのNetworkModeをawsvpcに、TargetGroupのTargetTypeをipに設定する必要がある
@@ -97,8 +90,8 @@ Resources:
     DependsOn: ECSALBListenerRule
     Properties:
       Family: !Sub ${StackID}-app-web
-      Memory: 512
-      Cpu: 256
+      Memory: '512'
+      Cpu: '256'
       NetworkMode: awsvpc
       ExecutionRoleArn: !Ref TaskExecutionRole
       TaskRoleArn: !Ref TaskRole
@@ -179,7 +172,6 @@ Resources:
       Protocol: HTTPS
   ECSALBListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    DependsOn: ALBListener
     Properties:
       Actions:
       - Type: forward
